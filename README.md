@@ -1,4 +1,12 @@
-# Anthropic Computer Use Demo
+# Claude Terminal Control Interface
+
+A Python-based terminal interface for controlling your computer using Claude's computer control capabilities. This project provides both a terminal interface and a web interface for interacting with Claude.
+
+## About
+
+This project extends the Anthropic Computer Use Demo to add a terminal-based interface, allowing you to control your computer through Claude directly from your command line. It supports multiple API providers (Anthropic, Bedrock, and Vertex) and includes all the computer control capabilities of Claude.
+
+For a simplified local setup without Docker, see [SETUP.md](SETUP.md).
 
 > [!CAUTION]
 > Computer use is a beta feature. Please be aware that computer use poses unique risks that are distinct from standard API features or chat interfaces. These risks are heightened when using computer use to interact with the internet. To minimize risks, consider taking precautions such as:

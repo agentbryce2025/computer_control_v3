@@ -1,6 +1,24 @@
 #!/usr/bin/env python3
 """
-Terminal-based interface for the computer use demo.
+Terminal-based interface for controlling your computer through Claude.
+
+This module provides a command-line interface for interacting with Claude's computer control
+capabilities. It allows you to send commands to Claude and have it control your computer
+through the terminal, without needing a web interface.
+
+Usage:
+    ./terminal.py [--api-key KEY] [--provider PROVIDER] [--model MODEL] [--hide-images]
+    
+Example commands once running:
+    - Normal text: Any text will be sent to Claude as a command
+    - exit: Exit the program
+    - clear: Clear the conversation history
+    
+The interface will display:
+    - Your input prefixed with "You: "
+    - Claude's responses prefixed with "Assistant: "
+    - Tool usage and results as they occur
+    - Screenshots will be noted but not displayed in terminal mode
 """
 
 import argparse
