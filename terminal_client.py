@@ -9,8 +9,8 @@ import signal
 import time
 
 # Configuration
-DOCKER_WS_URL = "ws://localhost:8080/ws"
-DOCKER_HTTP_URL = "http://localhost:8080"
+DOCKER_WS_URL = "ws://localhost:8501/_stcore/stream"
+DOCKER_HTTP_URL = "http://localhost:8501"
 
 def check_server_ready():
     """Check if the computer-control server is running and ready"""
@@ -46,7 +46,19 @@ class TerminalClient:
 
     def connect(self):
         try:
-            self.ws = create_connection(DOCKER_WS_URL)
+            # Add necessary headers for Streamlit WebSocket connection
+            headers = {
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "*/*",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Sec-WebSocket-Version": "13",
+                "Origin": "http://localhost:8501",
+                "Pragma": "no-cache",
+                "Cache-Control": "no-cache"
+            }
+            
+            self.ws = create_connection(DOCKER_WS_URL, header=headers)
             print("Connected to computer-control server")
             return True
         except Exception as e:
