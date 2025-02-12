@@ -127,6 +127,34 @@ You can also set `GOOGLE_APPLICATION_CREDENTIALS` to use an arbitrary credential
 
 ### Accessing the demo app
 
+You can interact with the computer control system in two ways:
+
+#### 1. Terminal Interface (New)
+
+For direct command-line interaction:
+
+```bash
+# Inside the container
+computer-control --api-key your_api_key
+
+# With environment variable
+export ANTHROPIC_API_KEY=your_api_key
+computer-control
+
+# Full options
+computer-control \
+  --api-key your_api_key \
+  --provider [anthropic|bedrock|vertex] \
+  --model model_name \
+  --hide-images
+```
+
+Special commands in the terminal interface:
+- Type `exit` or press Ctrl+C to quit
+- Type `clear` to clear the conversation history
+
+#### 2. Web Interface
+
 Once the container is running, open your browser to [http://localhost:8080](http://localhost:8080) to access the combined interface that includes both the agent chat and desktop view.
 
 The container stores settings like the API key and custom system prompt in `~/.anthropic/`. Mount this directory to persist these settings between container runs.

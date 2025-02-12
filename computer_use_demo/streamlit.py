@@ -424,5 +424,8 @@ def _render_message(
             st.markdown(message)
 
 
-if __name__ == "__main__":
+def main():
     asyncio.run(main())
+
+if __name__ == "__main__":
+    main()

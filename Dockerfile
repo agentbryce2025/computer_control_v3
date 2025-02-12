@@ -92,7 +92,8 @@ RUN python -m pip install -r $HOME/computer_use_demo/requirements.txt
 
 # setup desktop env & app
 COPY --chown=$USERNAME:$USERNAME image/ $HOME
-COPY --chown=$USERNAME:$USERNAME computer_use_demo/ $HOME/computer_use_demo/
+COPY --chown=$USERNAME:$USERNAME . $HOME/computer_use_demo/
+RUN cd $HOME/computer_use_demo && python -m pip install -e .
 
 ARG DISPLAY_NUM=1
 ARG HEIGHT=768
