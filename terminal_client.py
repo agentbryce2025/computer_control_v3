@@ -6,10 +6,26 @@ from websocket import create_connection
 import threading
 import queue
 import signal
+import time
 
 # Configuration
 DOCKER_WS_URL = "ws://localhost:8080/ws"
 DOCKER_HTTP_URL = "http://localhost:8080"
+
+def check_server_ready():
+    """Check if the computer-control server is running and ready"""
+    max_attempts = 5
+    for attempt in range(max_attempts):
+        try:
+            response = requests.get(DOCKER_HTTP_URL)
+            if response.status_code == 200:
+                return True
+        except requests.exceptions.RequestException:
+            if attempt < max_attempts - 1:
+                print(f"Server not ready, retrying in 2 seconds... (attempt {attempt + 1}/{max_attempts})")
+                time.sleep(2)
+            continue
+    return False
 
 class TerminalClient:
     def __init__(self):
@@ -88,6 +104,12 @@ class TerminalClient:
                 self.ws.close()
 
 def main():
+    # Check if server is ready before starting the client
+    if not check_server_ready():
+        print("Error: Computer-control server is not running or not accessible.")
+        print("Make sure to run 'docker-compose up computer-control' first.")
+        sys.exit(1)
+        
     client = TerminalClient()
     client.run()
 
