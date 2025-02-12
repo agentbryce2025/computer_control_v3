@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Terminal-based interface for the computer use demo.
 """

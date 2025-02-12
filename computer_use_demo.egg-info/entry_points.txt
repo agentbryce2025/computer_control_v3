@@ -1,0 +1,3 @@
+[console_scripts]
+computer-control = computer_use_demo.terminal:main
+computer-control-gui = computer_use_demo.streamlit:main
