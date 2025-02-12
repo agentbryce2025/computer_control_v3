@@ -9,8 +9,8 @@ import signal
 import time
 
 # Configuration
-DOCKER_WS_URL = "ws://localhost:8501/_stcore/stream"
-DOCKER_HTTP_URL = "http://localhost:8501"
+DOCKER_WS_URL = "ws://localhost:8080/ws"
+DOCKER_HTTP_URL = "http://localhost:8080"
 
 def check_server_ready():
     """Check if the computer-control server is running and ready"""
