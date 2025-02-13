@@ -135,9 +135,28 @@ You can also set `GOOGLE_APPLICATION_CREDENTIALS` to use an arbitrary credential
 
 ### Accessing the demo app
 
-You can interact with the computer control system in two ways:
+You can interact with the computer control system in three ways:
 
-#### 1. Terminal Interface (New)
+#### 1. WebSocket Terminal Client (New)
+
+For a lightweight terminal interface that connects via WebSocket:
+
+```bash
+# Start the server in one terminal
+docker-compose up computer-control
+
+# In another terminal, run the client
+python terminal_client.py
+```
+
+Example commands to try:
+```
+> {"action": "screenshot"}
+> {"action": "mouse_move", "coordinate": [100, 100]}
+> {"action": "left_click"}
+```
+
+#### 2. Terminal Interface
 
 For direct command-line interaction:
 

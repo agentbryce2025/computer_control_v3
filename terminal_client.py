@@ -53,7 +53,7 @@ class TerminalClient:
                 "Accept-Language": "en-US,en;q=0.5",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Sec-WebSocket-Version": "13",
-                "Origin": "http://localhost:8501",
+                "Origin": "http://localhost:8080",
                 "Pragma": "no-cache",
                 "Cache-Control": "no-cache"
             }
