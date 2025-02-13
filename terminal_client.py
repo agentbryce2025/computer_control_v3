@@ -71,20 +71,24 @@ class TerminalClient:
                 message = self.ws.recv()
                 response = json.loads(message)
                 if "error" in response:
-                    print(f"Error: {response['error']}")
+                    print(f"\nError: {response['error']}")
                 elif "response" in response:
-                    print(f"Response: {response['response']}")
+                    print(f"\nAssistant: {response['response']}")
+                elif "tool_use" in response:
+                    tool = response["tool_use"]
+                    print(f"\nTool Use: {tool['name']}")
+                    print(f"Input: {tool['input']}")
                 elif "function_results" in response:
                     results = response["function_results"]
                     if "error" in results:
-                        print(f"Error: {results['error']}")
-                    elif "output_image" in results:
-                        print("Received screenshot")
-                    else:
-                        print(f"Results: {results}")
+                        print(f"\nTool Error: {results['error']}")
+                    if "output" in results:
+                        print(f"\nTool Output: {results['output']}")
+                    if "output_image" in results:
+                        print("\nScreenshot taken")
             except Exception as e:
                 if self.running:
-                    print(f"Error receiving message: {e}")
+                    print(f"\nError receiving message: {e}")
                 break
 
     def send_message(self, message):
@@ -102,11 +106,25 @@ class TerminalClient:
         receive_thread.daemon = True
         receive_thread.start()
 
-        print("Enter your messages (Ctrl+C to quit):")
+        print("\nComputer Control Terminal Interface")
+        print("---------------------------------------")
+        print("You can:")
+        print("1. Type natural language commands for Claude")
+        print("   Example: 'Open Firefox and go to google.com'")
+        print("2. Press Ctrl+C to quit")
+        print("3. Type 'clear' to clear the conversation")
+        print("---------------------------------------")
+
         try:
             while self.running:
-                message = input("> ")
-                if message.strip():
+                message = input("\nYou: ").strip()
+                
+                if message.lower() == 'clear':
+                    # Send a special message to clear the conversation
+                    self.send_message("!clear")
+                    print("\nConversation cleared.")
+                    continue
+                elif message:
                     self.send_message(message)
         except KeyboardInterrupt:
             pass
