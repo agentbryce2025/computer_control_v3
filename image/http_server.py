@@ -1,13 +1,23 @@
 import os
 import json
 import asyncio
-import websockets
-import http
 from aiohttp import web
-import threading
 
 PORT = 8080
 connected_clients = set()
+
+async def handle_computer_action(data):
+    """Handle computer control actions"""
+    try:
+        if "action" not in data:
+            return {"error": "Missing 'action' field in request"}
+            
+        action = data["action"]
+        # Here you would implement the actual computer control logic
+        # For now, we'll just echo back the request
+        return {"status": "success", "function_results": data}
+    except Exception as e:
+        return {"error": str(e)}
 
 async def websocket_handler(request):
     ws = web.WebSocketResponse()
@@ -21,9 +31,11 @@ async def websocket_handler(request):
             if msg.type == web.WSMsgType.TEXT:
                 try:
                     data = json.loads(msg.data)
-                    # Handle the message based on your protocol
-                    response = {"status": "received", "message": data}
-                    await ws.send_json(response)
+                    if "message" in data:
+                        response = await handle_computer_action(data["message"])
+                        await ws.send_json(response)
+                    else:
+                        await ws.send_json({"error": "Missing 'message' field in request"})
                 except json.JSONDecodeError:
                     await ws.send_json({"error": "Invalid JSON format"})
             elif msg.type == web.WSMsgType.ERROR:
