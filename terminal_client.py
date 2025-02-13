@@ -9,7 +9,7 @@ import signal
 import time
 
 # Configuration
-DOCKER_WS_URL = "ws://localhost:8080/ws"
+DOCKER_WS_URL = "ws://localhost:8080/websocket"
 DOCKER_HTTP_URL = "http://localhost:8080"
 
 def check_server_ready():

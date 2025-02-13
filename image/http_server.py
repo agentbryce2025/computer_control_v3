@@ -114,9 +114,16 @@ async def index_handler(request):
 
 def run_server():
     app = web.Application()
-    app.router.add_get('/ws', websocket_handler)
+    app.router.add_get('/websocket', websocket_handler)  # Changed from /ws to /websocket
     app.router.add_get('/', index_handler)
     app.router.add_static('/', path=os.path.join(os.path.dirname(__file__), 'static_content'))
+    
+    # Add CORS middleware
+    app.router.add_options('/{tail:.*}', lambda r: web.Response(headers={
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type,X-Requested-With'
+    }))
     
     print(f"Starting server on port {PORT}...")
     web.run_app(app, host='0.0.0.0', port=PORT)
