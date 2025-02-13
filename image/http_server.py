@@ -2,55 +2,49 @@ import os
 import json
 import asyncio
 import websockets
-from http.server import HTTPServer, SimpleHTTPRequestHandler
-from concurrent.futures import ThreadPoolExecutor
+import http
+from aiohttp import web
 import threading
 
-WEBSOCKET_PORT = 8080
-HTTP_PORT = 8080
-
+PORT = 8080
 connected_clients = set()
 
-async def websocket_handler(websocket, path):
+async def websocket_handler(request):
+    ws = web.WebSocketResponse()
+    await ws.prepare(request)
+    
     try:
-        connected_clients.add(websocket)
+        connected_clients.add(ws)
         print(f"Client connected. Total clients: {len(connected_clients)}")
         
-        async for message in websocket:
-            try:
-                data = json.loads(message)
-                # Handle the message based on your protocol
-                response = {"status": "received", "message": data}
-                await websocket.send(json.dumps(response))
-            except json.JSONDecodeError:
-                await websocket.send(json.dumps({"error": "Invalid JSON format"}))
+        async for msg in ws:
+            if msg.type == web.WSMsgType.TEXT:
+                try:
+                    data = json.loads(msg.data)
+                    # Handle the message based on your protocol
+                    response = {"status": "received", "message": data}
+                    await ws.send_json(response)
+                except json.JSONDecodeError:
+                    await ws.send_json({"error": "Invalid JSON format"})
+            elif msg.type == web.WSMsgType.ERROR:
+                print(f'WebSocket connection closed with exception {ws.exception()}')
     finally:
-        connected_clients.remove(websocket)
+        connected_clients.remove(ws)
         print(f"Client disconnected. Total clients: {len(connected_clients)}")
+        
+    return ws
 
-def run_websocket_server():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    start_server = websockets.serve(websocket_handler, "0.0.0.0", WEBSOCKET_PORT)
-    print(f"Starting WebSocket server on port {WEBSOCKET_PORT}...")
-    loop.run_until_complete(start_server)
-    loop.run_forever()
-
-def run_http_server():
-    os.chdir(os.path.dirname(__file__) + "/static_content")
-    server_address = ('0.0.0.0', HTTP_PORT)
-    httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
-    print(f"Starting HTTP server on port {HTTP_PORT}...")
-    httpd.serve_forever()
+async def index_handler(request):
+    return web.FileResponse(os.path.join(os.path.dirname(__file__), 'static_content', 'index.html'))
 
 def run_server():
-    # Start WebSocket server in a separate thread
-    websocket_thread = threading.Thread(target=run_websocket_server)
-    websocket_thread.daemon = True
-    websocket_thread.start()
-
-    # Run HTTP server in the main thread
-    run_http_server()
+    app = web.Application()
+    app.router.add_get('/ws', websocket_handler)
+    app.router.add_get('/', index_handler)
+    app.router.add_static('/', path=os.path.join(os.path.dirname(__file__), 'static_content'))
+    
+    print(f"Starting server on port {PORT}...")
+    web.run_app(app, host='0.0.0.0', port=PORT)
 
 if __name__ == "__main__":
     run_server()
